@@ -1,0 +1,43 @@
+.header {
+    color: #5f5f5f;
+    font-size: 11px !important;
+  }
+  
+  .change-icon {
+    font-size: 18px;
+    width: auto;
+    height: auto;
+    visibility: hidden;
+    cursor: default;
+  }
+  
+  .currency-code {
+    padding-right: 8px;
+    font-size: 14px !important;
+  }
+  
+  .currency-wrapper {
+    white-space: nowrap !important;
+    height: 100%;
+    &:hover {
+      .change-icon {
+        visibility: visible;
+      }
+    }
+  }
+  
+  .data-medium {
+    color: #252422 !important;
+    font-size: 15px !important;
+    text-align: center !important;
+    font-weight: 440 !important;
+    padding-right: 4px !important;
+  }
+  
+  .data-overview {
+    color: #526179 !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    font-family: 'DM Sans',sans-serif;
+  }
+  

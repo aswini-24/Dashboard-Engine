@@ -1,0 +1,94 @@
+// @import 'animate.css';/
+
+.success-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  background: linear-gradient(180deg, #f2fbf7 0%, #e8f6ef 100%);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.success-box {
+  background: #fff;
+  border-radius: 22px;
+  padding: 50px 70px;
+  text-align: center;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+  animation: floatIn 1s ease-in-out;
+}
+
+.tick-icon img {
+  width: 90px;
+  margin-bottom: 25px;
+  animation: pulse 1.8s infinite ease-in-out;
+}
+
+h1 {
+  color: #164d3f;
+  font-size: 1.9rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+p {
+  color: #5c6f65;
+  font-size: 1.05rem;
+  margin-bottom: 35px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
+
+.btn {
+  padding: 12px 26px;
+  border: none;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn.view {
+  background-color: #1ea975;
+  color: #fff;
+}
+
+.btn.view:hover {
+  background-color: #178b61;
+  transform: scale(1.05);
+}
+
+.btn.create {
+  background-color: #f3f8f5;
+  color: #1a3b34;
+  border: 1px solid #cae9dd;
+}
+
+.btn.create:hover {
+  background-color: #e8f3ee;
+  transform: scale(1.05);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

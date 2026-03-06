@@ -1,0 +1,50 @@
+<p style="font-size: 19px;
+    padding-left: 90vh;
+    padding-top: 12vh;
+    margin-bottom: -2px;
+    color: #5F6C81;
+    font-weight: 500;">Create Report</p>
+
+<div style="display: flex;flex-direction: row;" class="col-12">
+    <div class="col-12" style="    gap: 9vh;
+    display: flex
+;
+    flex-direction: column;
+    padding: 2%;
+    padding-left: 30%;">
+        <div style="justify-content: space-between;display: flex;flex-direction: column;gap: 2vh;">
+            <label class="input-header mt-2 mb-0">Report Name</label>
+            <mat-form-field appearance="outline" class="create-account-field">
+                <input style="padding-top: 2px;" matInput placeholder="Enter the Report Name"
+                    [(ngModel)]="reportName" />
+                <mat-hint style="color: #515965;
+    margin-left: -12px;
+    font-size: 11px;
+    margin-top: 3px;">Provide your desire Application/Report name.</mat-hint>
+            </mat-form-field>
+        </div>
+        <div style="justify-content: space-between;display: flex;flex-direction: column;gap: 2vh;">
+            <label class="input-header mt-2 mb-0">Grid Data API URL:<p style="color: #515965;
+    font-size: 11px;
+    margin-top: 3px;
+    margin-bottom: 0px;">
+Structure To Be: messType('S'/'E'),messText,messData</p></label>
+            <mat-form-field appearance="outline" class="create-account-field">
+                <input style="padding-top: 2px;" matInput placeholder="Enter the API URL for row data. Ex: api/opportunitiesV2/getOpportunitiesList"
+                    [(ngModel)]="rowDataAPI" />
+            </mat-form-field>
+        </div>
+        <div style="justify-content: start;display: flex;margin-top: 4vh;">
+            <button class="get-data" (click)="getData();">Get Data</button>
+        </div>
+    </div>
+
+    <!-- <div style="text-align: center;" class="col-6">
+        <img src="https://assets.kebs.app/proposal-searchTemplate.png" alt="Create your own report engine"
+            style="height: 46vh;" />
+        <p style="font-family: 'DM SANS';color: #526179;">Enter your base API URL to load data into the report engine.
+        </p>
+        <p style="font-family: 'DM SANS';color: #526179;">Make sure the API returns JSON in this format:messType
+            ('S'/'E'), messData, messText.</p>
+    </div> -->
+</div>

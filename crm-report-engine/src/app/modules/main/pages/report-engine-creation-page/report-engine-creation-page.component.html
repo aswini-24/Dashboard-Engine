@@ -1,0 +1,179 @@
+<form [formGroup]="reportEngineForm">
+    <mat-card class="col-12" style="display: flex;justify-content: center;">
+
+        @if (!isLoading && messDataKeys.length > 0) {
+        <div class="main-body" style="width: 100%; border-radius: 4px;">
+            <div class="col-12"
+                style="gap: 5vh; display: flex;flex-direction: row; padding: 1%;justify-content: start;">
+                <p class="input-header mt-2 mb-0 col-3">Total Keys: {{messDataKeys.length}}</p>
+                <div class="d-flex search mt-3 col-4" style="margin: 5%; margin-bottom: 2px;">
+                    <mat-form-field appearance="outline" style=" width: 405px; font-size: 12px;">
+                        <input type="text" class="pl-2" matInput [(ngModel)]="query"
+                            [ngModelOptions]="{standalone: true}" (input)="onSearch($event)" placeholder="Search Keys"
+                            style="font-size: 14px; margin-top: 3px;margin-left: -7px;" />
+                        <svg width="14" height="14" class="search-icon" viewBox="0 0 14 14" fill="none" xmlns="
+              http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_7166_45749)">
+                                <path
+                                    d="M10.2665 9.17145L12.5864 11.4909L11.82 12.2573L9.50055 9.93736C8.63753 10.6292 7.56409 11.0055 6.45801 11.0039C3.76701 11.0039 1.58301 8.81991 1.58301 6.12891C1.58301 3.43791 3.76701 1.25391 6.45801 1.25391C9.14901 1.25391 11.333 3.43791 11.333 6.12891C11.3346 7.23499 10.9583 8.30843 10.2665 9.17145ZM9.17988 8.76953C9.86732 8.06259 10.2512 7.11497 10.2497 6.12891C10.2497 4.03374 8.55263 2.33724 6.45801 2.33724C4.36284 2.33724 2.66634 4.03374 2.66634 6.12891C2.66634 8.22353 4.36284 9.92057 6.45801 9.92057C7.44407 9.92213 8.3917 9.53822 9.09863 8.85078L9.17988 8.76953Z"
+                                    fill="white" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_7166_45749">
+                                    <rect width="13" height="13" fill="white" transform="translate(0.5 0.169922)" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </mat-form-field>
+                </div>
+                <div style="justify-content: end;align-content: end; display: flex;" class="mt-3 col-3">
+                    <button class="create-report" (click)="createReport()">Create Report</button>
+                </div>
+            </div>
+        </div>
+        <div>
+            <!-- <div class="header table-row">
+                <div></div>
+                <div>
+                    <mat-checkbox [checked]="isAllSelected" (change)="toggleSelectAll($event)">
+                    </mat-checkbox>
+                </div>
+                <div>Display Name</div>
+                <div>Key</div>
+                <div>Example Value</div>
+                <div>Hide</div>
+                <div>Summary Card</div>
+                <div>Slicer</div>
+                <div>Is Date Filter</div>  
+                <div *ngIf="showCustomComponentHeader">Custom Component</div>
+            </div> -->
+
+            <!-- BODY -->
+            <div cdkDropList class="example-list" style="height: 37rem;overflow-y: scroll;"
+                (cdkDropListDropped)="drop($event)" formGroupName="keys">
+                 <div class="header table-row">
+                 <div></div> <!-- drag handle column -->
+                <div>
+                <mat-checkbox [checked]="isAllSelected" (change)="toggleSelectAll($event)"></mat-checkbox>
+                </div>
+                <div>Display Name</div>
+                <div>Key</div>
+                <div>Example Value</div>
+                <div>Hide</div>
+                <div>Summary Card</div>
+                <div>Slicer</div>
+                <div>Is Date Filter</div>
+                <div *ngIf="showCustomComponentHeader">Custom Component</div>
+            </div>
+                @for (key of filteredKeys; track key) {
+                <div class="example-box table-row" cdkDrag>
+
+                    <!-- drag handle -->
+                    <div class="example-handle">
+                        <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M13.6666 7.50033C13.6666 7.95866 13.5034 8.35102 13.177 8.67741C12.8506 9.0038 12.4583 9.16699 11.9999 9.16699C11.5416 9.16699 11.1492 9.0038 10.8228 8.67741C10.4964 8.35102 10.3333 7.95866 10.3333 7.50033C10.3333 7.04199 10.4964 6.64963 10.8228 6.32324C11.1492 5.99685 11.5416 5.83366 11.9999 5.83366C12.4583 5.83366 12.8506 5.99685 13.177 6.32324C13.5034 6.64963 13.6666 7.04199 13.6666 7.50033ZM13.6666 2.50033C13.6666 2.95866 13.5034 3.35102 13.177 3.67741C12.8506 4.0038 12.4583 4.16699 11.9999 4.16699C11.5416 4.16699 11.1492 4.0038 10.8228 3.67741C10.4964 3.35102 10.3333 2.95866 10.3333 2.50033C10.3333 2.04199 10.4964 1.64963 10.8228 1.32324C11.1492 0.996853 11.5416 0.833659 11.9999 0.833659C12.4583 0.833659 12.8506 0.996853 13.177 1.32324C13.5034 1.64963 13.6666 2.04199 13.6666 2.50033ZM8.66658 7.50033C8.66658 7.95866 8.50339 8.35102 8.177 8.67741C7.85061 9.0038 7.45825 9.16699 6.99992 9.16699C6.54158 9.16699 6.14922 9.0038 5.82284 8.67741C5.49645 8.35102 5.33325 7.95866 5.33325 7.50033C5.33325 7.04199 5.49645 6.64963 5.82284 6.32324C6.14922 5.99685 6.54158 5.83366 6.99992 5.83366C7.45825 5.83366 7.85061 5.99685 8.177 6.32324C8.50339 6.64963 8.66658 7.04199 8.66658 7.50033ZM8.66658 2.50033C8.66658 2.95866 8.50339 3.35102 8.177 3.67741C7.85061 4.0038 7.45825 4.16699 6.99992 4.16699C6.54158 4.16699 6.14922 4.0038 5.82284 3.67741C5.49645 3.35102 5.33325 2.95866 5.33325 2.50033C5.33325 2.04199 5.49645 1.64963 5.82284 1.32324C6.14922 0.996853 6.54158 0.833659 6.99992 0.833659C7.45825 0.833659 7.85061 0.996853 8.177 1.32324C8.50339 1.64963 8.66658 2.04199 8.66658 2.50033ZM3.66659 7.50033C3.66659 7.95866 3.50339 8.35102 3.177 8.67741C2.85061 9.0038 2.45825 9.16699 1.99992 9.16699C1.54159 9.16699 1.14922 9.0038 0.822835 8.67741C0.496446 8.35102 0.333252 7.95866 0.333252 7.50033C0.333252 7.04199 0.496446 6.64963 0.822835 6.32324C1.14922 5.99685 1.54159 5.83366 1.99992 5.83366C2.45825 5.83366 2.85061 5.99685 3.177 6.32324C3.50339 6.64963 3.66659 7.04199 3.66659 7.50033ZM3.66659 2.50033C3.66659 2.95866 3.50339 3.35102 3.177 3.67741C2.85061 4.0038 2.45825 4.16699 1.99992 4.16699C1.54159 4.16699 1.14922 4.0038 0.822835 3.67741C0.496446 3.35102 0.333252 2.95866 0.333252 2.50033C0.333252 2.04199 0.496446 1.64963 0.822835 1.32324C1.14922 0.996853 1.54159 0.833659 1.99992 0.833659C2.45825 0.833659 2.85061 0.996853 3.177 1.32324C3.50339 1.64963 3.66659 2.04199 3.66659 2.50033Z"
+                                fill="#8B95A5" />
+                        </svg>
+                    </div>
+
+                    <!-- select -->
+                    <div>
+                        <mat-checkbox [formControlName]="key + '_selected'" (change)="onRowSelectChange()">
+                        </mat-checkbox>
+
+                    </div>
+
+                    <!-- display name -->
+                    <div>
+                        <input style="width: 62%; font-size: 13px; height: calc(1em + .75rem + 2px) !important;"
+                            type="text" class="form-control" [formControlName]="key + '_displayName'" />
+                    </div>
+
+                    <!-- inside your *ngFor row, replace the "key" column area with this -->
+                    <div class="key-column"
+                        style="display:flex; align-items:center; gap:8px;justify-content: space-between;">
+                        <!-- the key text -->
+                        <div style="display: flex;gap: 11px;align-items: center;">
+                            <span class="key-text">{{ key }}</span>
+
+                            <ng-container *ngIf="getCustomComponentControl(key)?.value as customVal">
+                                <mat-chip-grid #chipGrid aria-label="Selected custom component">
+                                    <mat-chip-row removable (removed)="removeCustomComponentForKey(key)">
+                                        {{ customVal === 'curr' ? 'Currency' : (customVal === 'image' ? 'User Profile' :
+                                        customVal) }}
+
+                                        <!-- remove button for the chip (Angular 18 style) -->
+                                        <button matChipRemove type="button" aria-label="Remove custom component">
+                                            <mat-icon aria-hidden="true">close</mat-icon>
+                                        </button>
+                                    </mat-chip-row>
+                                </mat-chip-grid>
+                                <input [matChipInputFor]="chipGrid" hidden />
+                            </ng-container>
+
+
+                            <!-- plus-circle button that opens the shared menu -->
+                            <button mat-icon-button class="plus-circle-button" aria-label="Add custom component"
+                                (click)="setCurrentPlusKey(key)" [matMenuTriggerFor]="plusMenu"
+                                [disabled]="plusButtonDisabled[key]" [attr.aria-disabled]="plusButtonDisabled[key]">
+                                <mat-icon>add</mat-icon>
+                            </button>
+                        </div>
+                        <!-- <div>plus-circle button that opens the shared menu -->
+                           
+                        <!-- </div> -->
+                    </div>
+
+                    <div>
+                        <p>{{getTooltipText(key)}}</p>
+                    </div>
+
+                    <!-- Shared Mat Menu (put once in the template, outside the loop) -->
+                    <mat-menu #plusMenu="matMenu">
+                        <button mat-menu-item (click)="selectCustomComponentForKey(currentPlusKey!, 'curr')">
+                            <span>Currency</span>
+                        </button>
+
+                        <button mat-menu-item (click)="selectCustomComponentForKey(currentPlusKey!, 'image')">
+                            <span>User Profile (OID)</span>
+                        </button>
+<!--                         
+                        <button mat-menu-item (click)="selectCustomComponentForKey(currentPlusKey!, 'label')">
+                            <span>Colored Label</span>
+                        </button> -->
+                    </mat-menu>
+
+                    <!-- NEW: Is Hide checkbox -->
+                    <div>
+                        <mat-checkbox [formControlName]="key + '_isHide'"></mat-checkbox>
+                    </div>
+
+                    <!-- slicer -->
+                    <div>
+                        <mat-checkbox [formControlName]="key + '_isStatusCard'"
+                            (change)="onStatusCardChange($event, key)">
+                        </mat-checkbox>
+                    </div>
+
+                    <!-- slicer -->
+                    <div>
+                        <mat-checkbox [formControlName]="key + '_isSlicer'"></mat-checkbox>
+                    </div>
+                    <div>
+                        <mat-checkbox [formControlName]="key + '_isDateFilter'"></mat-checkbox>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+        }
+        @else {
+        <ngx-spinner bdColor="rgba(0, 0, 0, 0)" size="default" color="#ee4971" type="square-loader"
+            [fullScreen]="true">
+            <p style="color: #160003ad; margin-top: -25px; font-family: DM Sans;"> Fetching columns from API... </p>
+        </ngx-spinner>
+        }
+
+    </mat-card>
+</form>

@@ -1,0 +1,81 @@
+// ============================================================
+// COMPLETE .widget-body UPDATE
+// ============================================================
+// Replace your .widget-body section with this:
+
+.widget-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  overflow: hidden; // Keep this to prevent overflow
+  min-height: 0; // Critical for flex children
+  position: relative;
+  
+  // Chart renderer fills the entire body
+  app-widget-chart-renderer {
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  // Placeholder (when no chart configured)
+  .widget-icon {
+    font-size: 48px;
+    color: #b0bec5;
+    margin-bottom: 10px;
+  }
+
+  .widget-hint {
+    font-size: 11px;
+    color: #aaa;
+  }
+}
+
+// ============================================================
+// ADDITIONAL FIX: Ensure .widget-card has proper height
+// ============================================================
+// Also update your .widget-card if it doesn't have these properties:
+
+.widget-card {
+  width: 100%;
+  height: 100%;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  
+  .widget-header {
+    // ... your existing header styles
+    flex-shrink: 0; // Prevent header from shrinking
+  }
+  
+  .widget-body {
+    // Uses the styles above
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+// ============================================================
+// GRIDSTER ITEM FIX
+// ============================================================
+// Make sure gridster items properly size their children:
+
+gridster-item {
+  .gridster-item-content {
+    width: 100%;
+    height: 100%;
+    overflow: visible; // Allow scroll to work inside
+  }
+}

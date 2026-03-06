@@ -1,0 +1,51 @@
+<div class="type-selection-container">
+  <div class="header">
+    <h1 class="title">How would you like to build your report?</h1>
+    <p class="subtitle">Select your preferred method based on your technical expertise.</p>
+  </div>
+
+  <div class="cards-container">
+    <!-- Non-Technical Users Card -->
+    <div class="card">
+      <div class="icon-wrapper non-technical">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      
+      <h2 class="card-title">For Non-Technical Users</h2>
+      <p class="card-description">
+        Describe your report in plain language using our guided-step builder.
+      </p>
+      
+      <button class="btn btn-primary" (click)="onStartWithPlainLanguage()">
+        Start with Plain Language
+      </button>
+    </div>
+
+    <!-- Technical Users Card -->
+    <div class="card">
+      <div class="icon-wrapper technical">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16 18 22 12 16 6"></polyline>
+          <polyline points="8 6 2 12 8 18"></polyline>
+        </svg>
+      </div>
+      
+      <h2 class="card-title">For Technical Users</h2>
+      <p class="card-description">
+        Build via API or connect directly to a database configuration.
+      </p>
+      
+      <div class="button-group">
+        <button class="btn btn-primary" (click)="onConnectAPI()">
+          Connect API
+        </button>
+        <button class="btn btn-secondary" (click)="onConfigureDatabase()">
+          Configure Database
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

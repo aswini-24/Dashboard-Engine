@@ -1,0 +1,401 @@
+<div class="chart-container">
+  <mat-card class="col-12">
+
+    @if (!loadingMeta && colDefs.length > 0) {
+
+      <div class="main-body">
+        <!-- Header Section -->
+        <div class="col-12 header-section">
+          <p class="input-header mt-2 mb-0 col-3">
+            Total Columns: {{ colDefs.length }}
+          </p>
+
+          <div class="controls-group">
+            <button
+              class="create-report"
+              (click)="renderFromSelection()"
+              [disabled]="!dataReady || !selectedX || !selectedY"
+            >
+              Render Charts
+            </button>
+
+            <button
+              class="save-btn"
+              (click)="saveAndReturn()"
+              [disabled]="!selectedX || !selectedY"
+            >
+              Save & Return
+            </button>
+
+            <button
+              class="cancel-btn"
+              (click)="cancelAndReturn()"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <!-- Configuration Panel -->
+        <div class="configuration-panel">
+          
+          <!-- Left Side: Data Sources -->
+          <div class="data-sources-section">
+            <!-- Search Box -->
+            <div class="search-box">
+              <mat-icon class="search-icon">search</mat-icon>
+              <input 
+                type="text" 
+                placeholder="Search columns..." 
+                [(ngModel)]="columnSearchText"
+                (ngModelChange)="filterColumns()"
+                class="search-input"
+              />
+              @if (columnSearchText) {
+                <button class="clear-search" (click)="clearColumnSearch()">
+                  <mat-icon>close</mat-icon>
+                </button>
+              }
+            </div>
+
+            <!-- Columns List -->
+            <div class="columns-list">
+              @for (col of getFilteredColumns(); track col.field) {
+                <div 
+                  class="column-item"
+                  draggable="true"
+                  (dragstart)="onDragStart($event, col)"
+                  (dragend)="onDragEnd($event)"
+                  [class.dragging]="draggedColumn?.field === col.field"
+                >
+                  <mat-icon class="drag-icon">drag_indicator</mat-icon>
+                  <div class="column-info">
+                    <span class="column-name">{{ col.headerName }}</span>
+                    <span class="column-key">{{ col.field }}</span>
+                  </div>
+                  <span class="column-type-icon" [title]="getColumnType(col.field)">
+                    @if (isNumericColumn(col.field)) {
+                      <mat-icon>tag</mat-icon>
+                    } @else if (isDateColumn(col.field)) {
+                      <mat-icon>calendar_today</mat-icon>
+                    } @else {
+                      <mat-icon>text_fields</mat-icon>
+                    }
+                  </span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Right Side: Configuration -->
+          <div class="config-section">
+            
+            <!-- X-axis Drop Zone -->
+            <div class="config-block">
+              <div class="config-label">
+                <span>X-axis</span>
+              </div>
+              
+              <div 
+                class="drop-zone"
+                [class.has-value]="selectedX"
+                [class.drag-over]="dragOverZone === 'x'"
+                (dragover)="onDragOver($event, 'x')"
+                (dragleave)="onDragLeave($event)"
+                (drop)="onDrop($event, 'x')"
+              >
+                @if (selectedX) {
+                  <div class="dropped-item">
+                    <mat-icon class="item-icon">tag</mat-icon>
+                    <span class="item-label">{{ getHeaderName(selectedX) }}</span>
+                    <button class="remove-btn" (click)="removeSelection('x')" title="Remove">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                } @else {
+                  <div class="drop-placeholder">
+                    <mat-icon>add</mat-icon>
+                    <span>Drag fields here</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Y-axis Drop Zone -->
+            <div class="config-block">
+              <div class="config-label">
+                <span>Y-axis</span>
+              </div>
+              
+              <div 
+                class="drop-zone"
+                [class.has-value]="selectedY"
+                [class.drag-over]="dragOverZone === 'y'"
+                (dragover)="onDragOver($event, 'y')"
+                (dragleave)="onDragLeave($event)"
+                (drop)="onDrop($event, 'y')"
+              >
+                @if (selectedY) {
+                  <div class="dropped-item">
+                    <mat-icon class="item-icon">functions</mat-icon>
+                    <span class="item-label">{{ getYAxisLabel() }}</span>
+                    <button class="remove-btn" (click)="removeSelection('y')" title="Remove">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                } @else {
+                  <div class="drop-placeholder">
+                    <mat-icon>add</mat-icon>
+                    <span>Drag fields here</span>
+                  </div>
+                }
+              </div>
+
+              <!-- Aggregation Mode - NOW OPTIONAL -->
+              @if (selectedY) {
+                <div class="aggregation-selector">
+                  <mat-form-field appearance="outline" class="agg-field">
+                    <mat-label>Aggregation (Optional)</mat-label>
+                    <mat-select 
+                      [(ngModel)]="groupMode" 
+                      (selectionChange)="onGroupModeChange(groupMode)"
+                    >
+                      <mat-option [value]="null">None</mat-option>
+                      <mat-option value="SUM">SUM</mat-option>
+                      <mat-option value="AVG">AVG</mat-option>
+                      <mat-option value="COUNT">COUNT</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              }
+            </div>
+
+            <!-- Break down by -->
+            <div class="config-block">
+              <div class="config-label">
+                <span>Break down by</span>
+              </div>
+              
+              <div 
+                class="drop-zone"
+                [class.has-value]="breakdownBy"
+                [class.drag-over]="dragOverZone === 'breakdown'"
+                (dragover)="onDragOver($event, 'breakdown')"
+                (dragleave)="onDragLeave($event)"
+                (drop)="onDrop($event, 'breakdown')"
+              >
+                @if (breakdownBy) {
+                  <div class="dropped-item">
+                    <mat-icon class="item-icon">calendar_today</mat-icon>
+                    <span class="item-label">{{ breakdownBy }}</span>
+                    <button class="remove-btn" (click)="removeSelection('breakdown')" title="Remove">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                } @else {
+                  <div class="drop-placeholder">
+                    <mat-icon>add</mat-icon>
+                    <span>Drag fields here</span>
+                  </div>
+                }
+              </div>
+
+              <!-- Breakdown Options -->
+              @if (breakdownBy) {
+                <div class="breakdown-options">
+                  <mat-form-field appearance="outline" class="breakdown-field">
+                    <mat-label>Break down by</mat-label>
+                    <mat-select [(ngModel)]="breakdownPeriod" (selectionChange)="onBreakdownChange()">
+                      <mat-option value="year">Year</mat-option>
+                      <mat-option value="quarter">Quarter</mat-option>
+                      <mat-option value="month">Month</mat-option>
+                      <mat-option value="week">Week</mat-option>
+                      <mat-option value="day">Day</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              }
+            </div>
+
+            <!-- Compare by -->
+            <div class="config-block">
+              <div class="config-label">
+                <span>Compare by</span>
+              </div>
+              
+              <div 
+                class="drop-zone"
+                [class.has-value]="compareBy"
+                [class.drag-over]="dragOverZone === 'compare'"
+                (dragover)="onDragOver($event, 'compare')"
+                (dragleave)="onDragLeave($event)"
+                (drop)="onDrop($event, 'compare')"
+              >
+                @if (compareBy) {
+                  <div class="dropped-item">
+                    <mat-icon class="item-icon">calendar_today</mat-icon>
+                    <span class="item-label">{{ compareBy }}</span>
+                    <button class="remove-btn" (click)="removeSelection('compare')" title="Remove">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                } @else {
+                  <div class="drop-placeholder">
+                    <mat-icon>add</mat-icon>
+                    <span>Drag fields here</span>
+                  </div>
+                }
+              </div>
+
+              <!-- Compare Options -->
+              @if (compareBy) {
+                <div class="compare-options">
+                  <mat-form-field appearance="outline" class="compare-field">
+                    <mat-label>Filter period</mat-label>
+                    <mat-select [(ngModel)]="filterPeriod" (selectionChange)="onFilterPeriodChange()">
+                      <mat-option value="this-year-to-last-year">This year to last year</mat-option>
+                      <mat-option value="this-month-to-last-month">This month to last month</mat-option>
+                      <mat-option value="this-quarter-to-last-quarter">This quarter to last quarter</mat-option>
+                      <mat-option value="custom">Custom range</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <div class="fiscal-year-option">
+                    <mat-checkbox [(ngModel)]="useFiscalYear" (change)="onFiscalYearChange()">
+                      Use fiscal year
+                    </mat-checkbox>
+                  </div>
+                </div>
+              }
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Charts Section -->
+        @if (dataReady && groupedLabels.length > 0) {
+          <div class="charts-section">
+            
+            <!-- Label Selection for Pie Charts -->
+            @if (isPieTypeChart()) {
+              <div class="label-selection-section">
+                <h4>Select Items to Display:</h4>
+                
+                <input 
+                  type="text" 
+                  class="search-input"
+                  placeholder="Search items..."
+                  [(ngModel)]="labelSearchText"
+                  (ngModelChange)="filterLabels()"
+                />
+
+                <mat-form-field appearance="outline" class="label-multiselect">
+                  <mat-label>Selected items ({{ selectedLabels.length }})</mat-label>
+                  <mat-select 
+                    [(ngModel)]="selectedLabels" 
+                    (selectionChange)="onLabelSelectionChange()"
+                    multiple
+                  >
+                    @for (item of getFilteredLabelOptions(); track item.label) {
+                      <mat-option [value]="item.label">
+                        {{ item.label }} ({{ item.value.toFixed(2) }})
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+                
+                <button 
+                  mat-raised-button 
+                  color="primary" 
+                  (click)="selectTopN()"
+                  class="select-top-btn"
+                >
+                  Select Top {{ topNItems > 0 ? topNItems : 'All' }}
+                </button>
+                
+                <button 
+                  mat-raised-button 
+                  (click)="clearSelection()"
+                  class="clear-btn"
+                >
+                  Clear All
+                </button>
+              </div>
+            }
+            
+            <!-- Chart 1 -->
+            <div class="chart-block">
+              <div class="chart-header">
+                <h3>Chart</h3>
+                <div class="chart-controls">
+                  <mat-form-field appearance="outline" class="chart-type-select">
+                    <mat-label>Chart Type</mat-label>
+                    <mat-select [(ngModel)]="chart1Type" (selectionChange)="onChart1TypeChange()">
+                      @for (type of chartTypes; track type.value) {
+                        <mat-option [value]="type.value">{{ type.label }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+
+                  @if (isPieTypeChart()) {
+                    <mat-form-field appearance="outline" class="chart-type-select">
+                      <mat-label>Show Items</mat-label>
+                      <mat-select [(ngModel)]="topNItems" (selectionChange)="onTopNChange()">
+                        <mat-option [value]="10">Top 10</mat-option>
+                        <mat-option [value]="15">Top 15</mat-option>
+                        <mat-option [value]="20">Top 20</mat-option>
+                        <mat-option [value]="30">Top 30</mat-option>
+                        <mat-option [value]="0">All Items</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  }
+
+                  <mat-form-field appearance="outline" class="chart-type-select">
+                    <mat-label>Labels</mat-label>
+                    <mat-select [(ngModel)]="labelDisplay" (selectionChange)="onLabelDisplayChange()">
+                      <mat-option value="none">Hidden</mat-option>
+                      <mat-option value="value">Show Values</mat-option>
+                      <mat-option value="percentage">Show Percentage</mat-option>
+                      <mat-option value="both">Value + Percentage</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <div class="zoom-controls">
+                    <button mat-icon-button (click)="zoomChart1('out')" [disabled]="chart1Zoom <= 50">
+                      <mat-icon>zoom_out</mat-icon>
+                    </button>
+                    <span class="zoom-level">{{ chart1Zoom }}%</span>
+                    <button mat-icon-button (click)="zoomChart1('in')" [disabled]="chart1Zoom >= 200">
+                      <mat-icon>zoom_in</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-scroll-container">
+                <canvas #barCanvas></canvas>
+              </div>
+            </div>
+
+          </div>
+        }
+
+      </div>
+
+    } @else {
+
+      <ngx-spinner
+        bdColor="rgba(0, 0, 0, 0)"
+        size="default"
+        color="#ee4971"
+        type="square-loader"
+        [fullScreen]="true"
+      >
+        <p style="color: #160003ad; margin-top: -25px; font-family: DM Sans;">
+          Loading columns...
+        </p>
+      </ngx-spinner>
+
+    }
+
+  </mat-card>
+</div>

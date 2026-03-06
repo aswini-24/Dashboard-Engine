@@ -1,0 +1,20 @@
+<div>
+    <p>Total Reports: {{allReports.length}}</p>
+</div>
+@for(report of allReports;track report){
+<div class="card tiles mr-3 mb-3" (click)="routeToReport(report)">
+    <div class="card-body pt-2 pb-1 pl-1 pr-1">
+        <!-- <button mat-icon-button matTooltip="Pin Report" class="bookmark-button"
+            (click)="clickPinReport(report)">
+            <mat-icon class="tile-bookmark-icon">bookmark_border</mat-icon>
+        </button> -->
+        <div class="row pt-2 pb-1 d-flex justify-content-center">
+           <img src="https://assets.kaartech.com/reports_images/sales_report.png" height="55px" width="55px">
+        </div>
+        <div class="layer"></div>
+        <div class="row d-flex pt-2 pb-2">
+            <span class="mx-auto tiles-title"> {{report.label}}</span>
+        </div>
+    </div>
+</div>
+}

@@ -1,0 +1,155 @@
+<div class="modal-container" @slideIn>
+  <!-- Close Button -->
+  <button class="close-button" (click)="closeModal()" aria-label="Close modal">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <!-- Header Section -->
+  <div class="modal-header">
+    <div class="header-content">
+      <div class="icon-wrapper">
+        <mat-icon class="header-icon">show_chart</mat-icon>
+      </div>
+      <div class="title-section">
+        <h1 class="modal-title">Chart Builder</h1>
+        <p class="modal-subtitle">Configure your data source to create interactive visualizations</p>
+      </div>
+      
+      <!-- Mode Toggle -->
+      <div class="mode-toggle">
+        <button 
+          class="toggle-btn"
+          [class.active]="selectedMode === 'new'"
+          (click)="switchMode('new')"
+          type="button">
+          <mat-icon>add</mat-icon>
+          <span>New API</span>
+        </button>
+        <button 
+          class="toggle-btn"
+          [class.active]="selectedMode === 'recent'"
+          (click)="switchMode('recent')"
+          type="button">
+          <mat-icon>history</mat-icon>
+          <span>Recent</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="modal-content">
+    
+    <!-- New API Input Mode -->
+    <div class="content-section" *ngIf="selectedMode === 'new'" @fadeIn>
+      <div class="input-group">
+        <label class="input-label">
+          <span class="label-text">API Endpoint</span>
+          <span class="label-required">*</span>
+        </label>
+        <div class="input-wrapper">
+          <mat-icon class="input-icon">link</mat-icon>
+          <input
+            type="text"
+            class="custom-input"
+            [(ngModel)]="rowDataAPI"
+            placeholder="/api/opportunitiesV2/getWinLossRepOppListUDRF"
+            [class.filled]="rowDataAPI.length > 0"
+            (keyup.enter)="canProceed() && proceed()"
+          />
+          <button 
+            *ngIf="rowDataAPI.length > 0"
+            class="clear-btn"
+            (click)="rowDataAPI = ''"
+            type="button"
+            aria-label="Clear input">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <span class="input-hint">Enter the full API path to fetch your data</span>
+      </div>
+    </div>
+
+    <!-- Recent APIs List Mode -->
+    <div class="content-section" *ngIf="selectedMode === 'recent'" @fadeIn>
+      <div class="recent-header">
+        <label class="input-label">
+          <span class="label-text">Recent APIs</span>
+        </label>
+        <span class="api-count">{{ recentApis.length }} available</span>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Loading recent APIs...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!isLoading && recentApis.length === 0">
+        <mat-icon class="empty-icon">inbox</mat-icon>
+        <h3>No Recent APIs</h3>
+        <p>You haven't used any APIs yet. Create a new one to get started.</p>
+        <button class="link-button" (click)="switchMode('new')" type="button">
+          <mat-icon>add</mat-icon>
+          Create New API
+        </button>
+      </div>
+
+      <!-- API List -->
+      <div class="api-list" *ngIf="!isLoading && recentApis.length > 0">
+        <div
+          *ngFor="let api of recentApis; trackBy: trackByApiId"
+          class="api-card"
+          [class.selected]="selectedRecentApi?.id === api.id"
+          (click)="selectRecentApi(api)"
+          role="button"
+          tabindex="0"
+          (keyup.enter)="selectRecentApi(api)">
+          
+          <div class="api-card-header">
+            <div class="api-info">
+              <h3 class="api-name">{{ api.name }}</h3>
+              <span class="api-category" [style.color]="getCategoryColor(api.category)">
+                {{ api.category }}
+              </span>
+            </div>
+            <div class="selection-indicator">
+              <mat-icon>check_circle</mat-icon>
+            </div>
+          </div>
+
+          <div class="api-path">
+            <mat-icon class="path-icon">link</mat-icon>
+            <code>{{ api.path }}</code>
+          </div>
+
+          <div class="api-meta">
+            <span class="last-used">
+              <mat-icon>schedule</mat-icon>
+              {{ formatLastUsed(api.lastUsed) }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Actions -->
+  <div class="modal-footer">
+    <button 
+      class="btn btn-secondary" 
+      (click)="closeModal()"
+      type="button">
+      <span>Cancel</span>
+    </button>
+    <button 
+      class="btn btn-primary" 
+      [disabled]="!canProceed()"
+      (click)="proceed()"
+      type="button">
+      <span>Continue</span>
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+  </div>
+</div>

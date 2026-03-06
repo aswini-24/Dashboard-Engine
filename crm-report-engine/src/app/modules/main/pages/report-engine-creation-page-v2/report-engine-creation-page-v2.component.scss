@@ -1,0 +1,569 @@
+$sidebar-width-left: 240px;
+$sidebar-width-right: 380px;
+$active-color: #ffeaea;
+$active-text: #d9304e;
+$border-color: #ebebeb;
+
+
+.layout-container {
+  display: flex;
+  height: 93vh;
+  width: 100%;
+  overflow: hidden; // Prevent any scroll on the container itself
+}
+
+// --- Left Sidebar ---
+.left-sidebar {
+  width: $sidebar-width-left;
+  border-right: 1px solid $border-color;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+    
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: #f0f0f0;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #999;
+      margin-right: 10px;
+    }
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      .brand { font-weight: 600; font-size: 14px; }
+      .sub { font-size: 12px; color: #888; }
+    }
+  }
+
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      border-radius: 8px;
+      color: #666;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+
+      .material-icons-outlined {
+        margin-right: 12px;
+        font-size: 20px;
+      }
+
+      &:hover {
+        background-color: #f5f5f5;
+      }
+
+      &.active {
+        background-color: $active-color;
+        color: $active-text;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+// --- Center Canvas ---
+.canvas-area {
+  flex: 1;
+  background-color: hsl(0, 0%, 100%);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%; // Prevent expansion
+  
+  // Add back the dots manually as background
+  background-image: radial-gradient(#9ba1a7 1px, transparent 1px);
+  background-size: 20px 20px;
+
+  ::ng-deep gridster {
+    background: transparent; // Remove gridster's own background
+  }
+  
+  // Floating Toggle Button
+  .components-toggle-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: #fff;
+    border: 1px solid $border-color;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: $active-color;
+      color: $active-text;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .material-icons-outlined {
+      font-size: 24px;
+    }
+  }
+
+  // Space Usage Indicator
+  .space-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1002;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    min-width: 250px;
+    animation: slideIn 0.3s ease;
+
+    .indicator-content {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      margin-bottom: 15px;
+
+      .material-icons-outlined {
+        font-size: 32px;
+        color: #666;
+        margin-top: 5px;
+      }
+
+      .indicator-stats {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .stat-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 13px;
+
+          .label {
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 11px;
+            font-weight: 500;
+          }
+
+          .percentage {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+          }
+
+          &.total {
+            margin-top: 4px;
+            padding-top: 8px;
+            border-top: 1px solid #f0f0f0;
+
+            .label {
+              font-size: 12px;
+            }
+
+            .percentage {
+              font-size: 20px;
+              font-weight: 700;
+            }
+          }
+        }
+      }
+    }
+
+    .progress-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+
+      .progress-bar {
+        width: 100%;
+        height: 4px;
+        background: #f0f0f0;
+        border-radius: 2px;
+        overflow: hidden;
+
+        &:last-child {
+          height: 6px;
+          border-radius: 3px;
+        }
+
+        .progress-fill {
+          height: 100%;
+          border-radius: 2px;
+          transition: width 0.3s ease, background-color 0.3s ease;
+        }
+      }
+    }
+
+    // Color variations based on usage
+    &.low {
+      .indicator-content .stat-row.total .percentage {
+        color: #10b981;
+      }
+      .progress-bars .progress-bar:last-child .progress-fill {
+        background: linear-gradient(90deg, #10b981, #34d399);
+      }
+      .progress-bars .progress-bar:not(:last-child) .progress-fill {
+        background: #10b981;
+      }
+    }
+
+    &.medium {
+      .indicator-content .stat-row.total .percentage {
+        color: #f59e0b;
+      }
+      .progress-bars .progress-bar:last-child .progress-fill {
+        background: linear-gradient(90deg, #f59e0b, #fbbf24);
+      }
+      .progress-bars .progress-bar:not(:last-child) .progress-fill {
+        background: #f59e0b;
+      }
+    }
+
+    &.high {
+      .indicator-content .stat-row.total .percentage {
+        color: #ef4444;
+      }
+      .progress-bars .progress-bar:last-child .progress-fill {
+        background: linear-gradient(90deg, #ef4444, #f87171);
+      }
+      .progress-bars .progress-bar:not(:last-child) .progress-fill {
+        background: #ef4444;
+      }
+    }
+  }
+  
+  .empty-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    
+    .placeholder-box {
+      background: rgba(255, 255, 255, 0.8);
+      border: 2px dashed #dbe3ed;
+      padding: 40px;
+      border-radius: 12px;
+      text-align: center;
+      
+      h3 { margin: 0 0 10px 0; color: #333; }
+      p { margin: 0; color: #777; font-size: 14px; }
+    }
+  }
+
+  .gridster-container {
+    height: 100%;
+    width: 100%;
+    max-width: 100%; // Prevent horizontal expansion
+    overflow-y: auto; // Allow vertical scroll
+    overflow-x: hidden; // Prevent horizontal scroll
+  }
+  
+  ::ng-deep .gridster {
+    overflow: visible !important; // Let parent handle scroll
+    max-width: 100% !important; // Lock width
+    height: auto !important; // Auto height based on content
+    min-height: 0 !important; // Remove minimum height
+  }
+  
+  ::ng-deep gridster-item {
+    max-width: 100% !important; // Prevent items from expanding beyond
+  }
+}
+
+// --- Gridster Item (The Widget Card) ---
+// Update your .widget-header section with these styles
+
+.widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, #ee4961, #d63e54);
+  color: white;
+  border-radius: 8px 8px 0 0;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: move;
+  flex-shrink: 0;
+  gap: 12px;
+
+  span {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .edit-btn,
+  .add-btn,
+  .close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    
+    .material-icons-outlined {
+      font-size: 18px;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.1);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  .edit-btn {
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .add-btn {
+    font-size: 20px;
+    font-weight: 700;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .close-btn {
+    &:hover {
+      background: rgba(220, 38, 38, 0.9);
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);
+    }
+  }
+}
+
+// Ensure widget body takes remaining space
+.widget-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  overflow: hidden;
+  min-height: 0;
+  position: relative;
+  
+  // Chart renderer fills the entire body
+  app-widget-chart-renderer {
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  // Placeholder (when no chart configured)
+  .widget-icon {
+    font-size: 48px;
+    color: #b0bec5;
+    margin-bottom: 10px;
+  }
+
+  .widget-hint {
+    font-size: 11px;
+    color: #aaa;
+  }
+}
+
+// Widget card structure
+.widget-card {
+  width: 100%;
+  height: 100%;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  }
+}
+
+// --- Right Sidebar ---
+.right-sidebar {
+  position: fixed;
+  top: 0;
+  right: -$sidebar-width-right;
+  width: $sidebar-width-right;
+  height: 100vh;
+  background: #fff;
+  padding: 20px;
+  box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+  transition: right 0.3s ease;
+  z-index: 1001;
+  overflow-y: auto;
+
+  &.open {
+    right: 0;
+  }
+
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .close-sidebar-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: #999;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: all 0.2s;
+
+      &:hover {
+        background: #f5f5f5;
+        color: #333;
+      }
+
+      .material-icons-outlined {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .components-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+
+    .component-box {
+      border: 1px solid #ebebeb;
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      transition: all 0.2s;
+      background: #fff;
+
+      &:hover {
+        border-color: #d9304e;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      }
+
+      .material-icons-outlined {
+        font-size: 24px;
+        color: #555;
+        margin-bottom: 10px;
+      }
+
+      .label {
+        font-size: 12px;
+        color: #333;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+// --- Overlay Backdrop ---
+.overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  animation: fadeIn 0.3s ease;
+  pointer-events: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }  
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to { 
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+// REMOVE GRIDSTER GRID LINES
+::ng-deep .gridster-column,
+::ng-deep .gridster-row {
+  border-color: transparent !important;
+  display: none !important;
+}
+
+::ng-deep gridster-grid {
+  display: none !important;
+}

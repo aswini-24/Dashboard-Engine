@@ -1,0 +1,252 @@
+.input-header {
+  color: #5F6C81;
+  font-family: "DM Sans";
+  font-size: 16px;
+  font-weight: 400;
+  align-content: center;
+}
+
+.create-account-field {
+  font-size: 13px !important;
+  width: 40% !important;
+  // .mat-form-field {
+
+  // }
+}
+
+.create-account-field-inputsearch {
+  font-size: 13px !important;
+
+  .mat-form-field {
+    width: 70% !important;
+  }
+}
+
+.email-hint {
+  padding-top: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #A8ACB2;
+}
+
+.get-data {
+  padding-left: 2%;
+  border-radius: 4px;
+  font-size: 15px;
+  padding-right: 2%;
+  border: 1px solid #ee4961;
+  color: #fff;
+  background-color: white;
+  background-color: #ee4961;
+}
+
+// /* Shared column layout for header and rows */
+// .table-row {
+//   display: grid;
+//   grid-template-columns: 40px 80px 200px 200px 100px;
+//   align-items: center;
+// }
+
+/* HEADER styling */
+.header {
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "DM Sans";
+  color: #5F6C81;
+}
+
+.header > div:nth-child(6),
+.header > div:nth-child(7),
+.header > div:nth-child(8),
+.header > div:nth-child(9) {
+  display: flex;
+  align-items: center;  
+  justify-content: center;
+  height: 100%;
+}
+.example-box > div:nth-child(6),
+.example-box > div:nth-child(7),
+.example-box > div:nth-child(8),
+.example-box > div:nth-child(9) {
+  display: flex;
+  align-items: center;  
+  justify-content: center;
+  height: 100%;
+}
+/* LIST container */
+.example-list {
+  border: solid 1px #ccc;
+  border-radius: 0 0 4px 4px;
+  background: white;
+  color: #5F6C81;
+}
+
+/* Row styling */
+.example-box {
+  border-bottom: solid 1px #ccc;
+  font-size: 14px;
+  background: white;
+  transition: background 0.2s ease;
+}
+
+.example-box:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* Drag handle column */
+.example-handle {
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* === CDK DRAG-DROP ANIMATIONS === */
+
+/* The "floating" preview element while dragging */
+.cdk-drag-preview {
+  transform: scale(1.03);
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  opacity: 0.95;
+  transition: transform 0.2s ease;
+}
+
+/* Placeholder where the item will be dropped */
+.cdk-drag-placeholder {
+  @extend .table-row; // ensures it matches column widths
+  background: rgba(238, 73, 97, 0.08);
+  /* soft maroon tint */
+  border: 2px dashed #EE4961;
+  border-radius: 6px;
+  min-height: 40px;
+  transition: all 0.25s ease;
+}
+
+/* Smooth repositioning of other rows while dragging */
+.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.scroll-container {
+  max-height: 300px;
+  /* adjust as needed */
+  overflow-y: auto;
+}
+
+.table-row {
+  display: grid;
+  box-sizing: border-box;
+  align-items: center;
+  gap: 12px;
+  grid-template-columns:
+    40px    /* drag handle */
+    80px    /* select checkbox */
+    300px   /* Display Name */
+    500px   /* Key */
+    400px   /* Example Value */
+    160px   /* Hide */
+    150px   /* Summary Card  (WIDENED) */
+    150px   /* Slicer        (WIDENED) */
+    180px   /* Is Date Filter (WIDENED) */
+    220px;  /* Custom Component */
+}
+
+.slicer-radio-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.slicer-radio-group mat-radio-button {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.search-icon {
+  background-color: #F66379;
+  color: white;
+  height: 31px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  margin-right: 2px;
+  position: absolute;
+  right: -13px;
+  top: 25px;
+  transform: translateY(-40%);
+  z-index: 1;
+  border-radius: 4px;
+  padding: 7px;
+}
+
+.search {
+
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper {
+
+    margin: 0 !important;
+
+
+  }
+
+  ::ng-deep .mat-form-field-infix {
+
+    height: 40px;
+
+  }
+
+  ::ng-deep .mat-input-element {
+
+    font-size: 14px;
+
+    font-family: "DM Sans", sans-serif;
+
+  }
+
+}
+
+.create-report {
+  background-color: #ee4961;
+  color: #fff;
+  height: 39px;
+  width: 141px;
+  border: 0;
+  border-radius: 4px;
+  font-family: DM Sans;
+  font-size: 84%;
+  line-height: normal;
+}
+
+.plus-circle-button {
+  width: 29px;
+  height: 28px;
+  min-width: 13px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 4px 0px 0px 0px;
+}
+
+/* optional: slightly smaller mat-icon inside */
+.plus-circle-button mat-icon {
+  font-size: 18px;
+}
+
+/* chip spacing next to key text */
+.key-column .mat-chip-list {
+  margin-left: 6px;
+}

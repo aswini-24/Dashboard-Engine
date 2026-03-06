@@ -1,0 +1,57 @@
+@if(currency){
+<div class="d-flex currency-wrapper" (click)="change()">
+    @if(type == 'big'){
+    <div class="d-flex" [matTooltip]="currency[index]?.currency_code + ' ' + currency[index]?.value">
+        <div class="pr-3 my-auto currency-code justify-content-center">
+            <!-- <div *appAcl="acl">{{ currency[index]?.currency_code }}</div> -->
+            <div>{{ currency[index]?.currency_code }}</div>
+        </div>
+        <div>
+            <p class="m-0 header">{{ label }}</p>
+            <p class="m-0 data-label pt-1">
+                {{ convert(currency[index]?.value, currency[index]?.currency_code) }}
+            </p>
+        </div>
+    </div>
+    }
+    @if(type == 'small'){
+    <div class="data-label"
+        [matTooltip]="currency[index]?.currency_code + ' ' + currency[index]?.value">
+        <span>
+            {{ convert(currency[index]?.value, currency[index]?.currency_code) }}
+        </span>
+    </div>
+    }
+    @if(type == 'medium'){
+    <div class="data-medium d-flex"
+        [matTooltip]="currency[index]?.currency_code + ' ' + currency[index]?.value">
+        <!-- <span *appAcl="acl" class="justify-content-center">
+        {{ currency[index]?.currency_code }}
+        {{ convert(currency[index]?.value) }}
+      </span> -->
+        <span class="justify-content-center">
+            {{ currency[index]?.currency_code }}
+            {{ convert(currency[index]?.value, currency[index]?.currency_code) }}
+        </span>
+    </div>
+    }
+    @if(type == 'overview'){
+    <div class="justify-content-center"
+        [matTooltip]="currency[index]?.currency_code + ' ' + currency[index]?.value">
+        <!-- <span *appAcl="acl" class="data-overview">
+        {{ currency[index]?.currency_code }}
+        {{ convert(currency[index]?.value) }}
+      </span> -->
+        <span class="data-overview">
+            {{ currency[index]?.currency_code }}
+            {{ convert(currency[index]?.value, currency[index]?.currency_code) }}
+        </span>
+    </div>
+    }
+    @if(currencyConvert){
+    <div class="d-flex align-items-center">
+        <mat-icon class="change-icon pl-2" matTooltip="Next currency">loop</mat-icon>
+    </div>
+    }
+</div>
+}

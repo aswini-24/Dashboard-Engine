@@ -1,0 +1,144 @@
+<div class="layout-container">
+
+  <main class="canvas-area">
+    
+    <!-- Floating Toggle Button -->
+    <button class="components-toggle-btn" (click)="toggleComponentsPanel()">
+      <span class="material-icons-outlined">{{isComponentsPanelOpen ? 'close' : 'widgets'}}</span>
+    </button>
+
+    <!-- Space Usage Indicator (only visible during drag/resize) -->
+    <div class="space-indicator" 
+         *ngIf="showSpaceIndicator"
+         [class]="getSpaceIndicatorClass()">
+      <div class="indicator-content">
+        <span class="material-icons-outlined">dashboard</span>
+        <div class="indicator-stats">
+          <div class="stat-row">
+            <span class="label">Width</span>
+            <span class="percentage">{{widthUsedPercentage}}%</span>
+          </div>
+          <div class="stat-row">
+            <span class="label">Height</span>
+            <span class="percentage">{{heightUsedPercentage}}%</span>
+          </div>
+          <div class="stat-row total">
+            <span class="label">Space</span>
+            <span class="percentage">{{spaceUsedPercentage}}%</span>
+          </div>
+        </div>
+      </div>
+      <div class="progress-bars">
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="widthUsedPercentage"></div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="heightUsedPercentage"></div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="spaceUsedPercentage"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-placeholder" *ngIf="dashboard.length === 0">
+      <div class="placeholder-box">
+        <h3>Build Your Report</h3>
+        <p>Drag components from the sidebar to get started.</p>
+      </div>
+    </div>
+
+    <gridster [options]="options" 
+              class="gridster-container"
+              (dragover)="onDragOver($event)" 
+              (drop)="onDrop($event)">
+
+      <gridster-item [item]="item" *ngFor="let item of dashboard">
+        <div class="widget-card">
+
+          <div class="widget-header drag-handler">
+            <span>{{ item.title }}</span>
+
+            <div class="header-buttons">
+              <!-- Always show edit and close buttons when chart is configured -->
+              @if (item.chartConfig) {
+                <button class="edit-btn"
+                        (mousedown)="$event.stopPropagation()"
+                        (click)="editChart($event, item)"
+                        title="Edit Chart">
+                  <span class="material-icons-outlined">edit</span>
+                </button>
+                <button class="close-btn"
+                        (mousedown)="removeItem($event, item)"
+                        title="Remove Widget">
+                  <span class="material-icons-outlined">close</span>
+                </button>
+              } @else {
+                <!-- Show add button when chart is not configured -->
+                <button class="add-btn"
+                        (mousedown)="$event.stopPropagation()"
+                        (click)="openChartColumnPicker($event, item)"
+                        title="Configure Chart">
+                  +
+                </button>
+                <button class="close-btn"
+                        (mousedown)="removeItem($event, item)"
+                        title="Remove Widget">
+                  <span class="material-icons-outlined">close</span>
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="widget-body">
+            @if (item.chartConfig) {
+              <!-- Render the actual chart -->
+              <app-widget-chart-renderer 
+                [chartConfig]="item.chartConfig">
+              </app-widget-chart-renderer>
+            } @else {
+              <!-- Show placeholder when not configured -->
+              <span class="material-icons-outlined widget-icon" *ngIf="item.type === 'line-chart'">show_chart</span>
+              <span class="material-icons-outlined widget-icon" *ngIf="item.type === 'pie-chart'">pie_chart</span>
+              <span class="material-icons-outlined widget-icon" *ngIf="item.type === 'ag-grid'">grid_on</span>
+              <span class="material-icons-outlined widget-icon" *ngIf="item.type === 'bar-chart'">bar_chart</span>
+              <span class="material-icons-outlined widget-icon" *ngIf="item.type === 'kpi-tile'">numbers</span>
+              <span class="material-icons-outlined widget-icon" *ngIf="item.type === 'text-block'">title</span>
+              <span class="material-icons-outlined widget-icon" *ngIf="item.type === 'image'">image</span>
+              <span class="material-icons-outlined widget-icon" *ngIf="item.type === 'chart'">pie_chart</span>
+
+              <p class="widget-hint">Click the '+' icon to configure chart</p>
+            }
+          </div>
+
+        </div>
+      </gridster-item>
+
+    </gridster>
+  </main>
+
+  <!-- Overlay Background -->
+  <div class="overlay-backdrop" 
+       *ngIf="isComponentsPanelOpen"></div>
+
+  <!-- Right Sidebar as Overlay -->
+  <aside class="right-sidebar" [class.open]="isComponentsPanelOpen">
+    <div class="sidebar-header">
+      <h3>Components</h3>
+      <button class="close-sidebar-btn" (click)="toggleComponentsPanel()">
+        <span class="material-icons-outlined">close</span>
+      </button>
+    </div>
+    
+    <div class="components-grid">
+      <div class="component-box" 
+           *ngFor="let comp of availableComponents"
+           draggable="true"
+           (dragstart)="onDragStart($event, comp)">
+        <span class="material-icons-outlined">{{comp.icon}}</span>
+        <span class="label">{{comp.label}}</span>
+      </div>
+    </div>
+  </aside>
+
+</div>

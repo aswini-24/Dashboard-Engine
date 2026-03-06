@@ -1,0 +1,162 @@
+.type-selection-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #f8f9fa;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+  max-width: 600px;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 0.75rem 0;
+  
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  max-width: 900px;
+  width: 100%;
+  
+  @media (max-width: 968px) {
+    grid-template-columns: 1fr;
+    max-width: 450px;
+  }
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.icon-wrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  
+  svg {
+    width: 28px;
+    height: 28px;
+  }
+  
+  &.non-technical {
+    background-color: #ffe5e9;
+    color: #e74c6c;
+  }
+  
+  &.technical {
+    background-color: #ffe5e9;
+    color: #e74c6c;
+  }
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 1rem 0;
+}
+
+.card-description {
+  font-size: 0.9375rem;
+  color: #6c757d;
+  line-height: 1.6;
+  margin: 0 0 2rem 0;
+  flex-grow: 1;
+}
+
+.btn {
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(231, 76, 108, 0.2);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.btn-primary {
+  background-color: #e74c6c;
+  color: white;
+  width: 100%;
+  
+  &:hover {
+    background-color: #d43f5c;
+  }
+}
+
+.btn-secondary {
+  background-color: white;
+  color: #1a1a1a;
+  border: 1px solid #dee2e6;
+  
+  &:hover {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+  }
+}
+
+.button-group {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+  
+  .btn {
+    flex: 1;
+  }
+  
+  @media (max-width: 480px) {
+    flex-direction: column;
+    
+    .btn {
+      width: 100%;
+    }
+  }
+}

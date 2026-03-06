@@ -1,0 +1,15 @@
+<div class="success-container animate__animated animate__fadeIn">
+  <div class="success-box animate__animated animate__fadeInUp">
+    <div class="tick-icon">
+      <img src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.7/dist/sweetalert2-success.svg" alt="success" />
+    </div>
+
+    <h1 style="font-family: 'DM Sans'">Report has been created successfully!</h1>
+    <p style="font-family: 'DM Sans'">Your report is ready to be viewed or you can create a new one.</p>
+
+    <div class="button-group">
+      <button class="btn view" (click)="onViewReport()">View Created Report</button>
+      <button class="btn create" (click)="onCreateAnother()">Create Another Report</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+    .crm-status-cards {
+        display: flex;
+        justify-content: flex-start;
+        margin-left: 0.6%;
+        gap: 1%;
+        height: 59px;
+      }
+      
+      .status-item {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        padding: 10px 10px 10px 2px;
+        background-color: white;
+        border-left: 5px solid currentColor;
+        border-top: none;
+        border-right: none;
+        border-bottom: none;
+        width: 221px;
+        box-shadow: 0 3px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.5s, box-shadow 1s, border 0.5s;
+      }
+      
+      .status-item.clicked {
+        border: 1px solid currentColor;  /* Add 1px border on all sides */
+        border-left-width: 5px;  /* Keep the left border 5px */
+        background-color: #fff2f7;  /* Background color when clicked */
+      }
+      
+      .status-item:hover {
+        transform: scale(1.02) perspective(0px);
+        box-shadow: 0 10px 10px gainsboro;
+        cursor: pointer;
+      }
+      
+      .status-text {
+        font-family: "DM Sans";
+        color: #526179;
+        font-size: 12px;
+        padding-left: 0.5rem;
+      }
+      
+      .status-value {
+        font-weight: 500;
+        color: #45546E;
+        font-family: "DM Sans";
+        font-size: 16px;
+        padding-left: 0.5rem; 
+      }

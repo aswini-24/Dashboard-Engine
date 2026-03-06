@@ -1,0 +1,24 @@
+@if(customComponentType == 'curr' && fieldValue){
+    <shared-currency 
+        [currencyList]="fieldValue" 
+        class="flex-1"
+        type="small" 
+        [defaultCurrencyCode]="currency_code || undefined"
+        [currencyConvert]="true">
+    </shared-currency>
+}
+@else if(customComponentType == 'curr' && !fieldValue){
+    <span style="font-size: 13px; color: #45546e;">-</span>
+}
+@else if(customComponentType == 'image' && fieldValue){
+    <shared-user-profile 
+        style="font-size: 13px;" 
+        type="medium" 
+        [oid]="fieldValue"
+        imgHeight="23px" 
+        imgWidth="23px">
+    </shared-user-profile>
+}
+@else if(customComponentType == 'image' && !fieldValue){
+    <span style="font-size: 13px; color: #45546e;">-</span>
+}

@@ -1,0 +1,339 @@
+<!-- <div>
+    <ngx-spinner bdColor="rgba(0, 0, 0, 0)" size="default" color="#ee4971" type="square-jelly-box" [fullScreen]="true">
+        <p style="color: #160003ad; margin-top: -25px; font-family: DM Sans;"> Fetching contacts list... </p>
+    </ngx-spinner>
+</div>
+<div class="contact-landing-styles">
+    @if(data.length > 0){
+    <div>
+        <app-shared-slicer [application_id]="application_id" [rowData]="rowData"
+            (slicerChanged)="onSlicerChanged($event)" (searchChanged)="onSearchChanged($event)"></app-shared-slicer>
+    </div>
+    <div class="ml-4">
+        <div class="crm-status-cards">
+            <div class="status-item" *ngFor="let item of statusItems" [ngStyle]="{'border-color': item.color}"
+                [ngClass]="{'clicked': item.isClicked}" (click)="onStatusItemClick(item)">
+                <div class="status-text pl-1">{{ item.value }}</div>
+                <div class="status-value">{{ item.count }}</div>
+            </div>
+        </div>
+    </div>
+    <div style="width:100% ;height: 85vh; margin-top: 3vh;">
+        <div style="width:100% ;height: 85vh;margin-top: -10px;">
+            <div style="height: 100% ; width: 97%;">
+                <ag-grid-angular style="width:100% ; height: 72vh;" class="ag-theme-alpine"
+                    [rowData]="rowData" [columnDefs]="colDefs" [sideBar]="sideBar"
+                    (gridReady)="onGridReady($event)">
+                </ag-grid-angular>
+            </div>
+        </div>
+    </div>
+    }
+</div> -->
+
+    @if (!isLoading){
+    <div class="toolbar-container">
+        <div class="total-count">
+            <span>Total</span>
+            <span class="highlight">{{ rowData.length }}</span>
+        </div>
+
+        <div class="toolbar-actions">
+
+        <div *ngIf="isWinLossReport()" class="win-rate-card">
+            <div class="win-rate-header">
+                <span class="material-icons win-rate-icon">trending_up</span>
+                <span class="win-rate-label">WIN RATE</span>
+            </div>  
+            <div class="win-rate-content">
+                <div class="win-rate-percentage">
+                    {{ winRate | number:'1.1-1' }}%
+                </div>
+            </div>
+        </div>
+
+            <div class="date-filter-wrapper">
+                <!-- Compact button when no filter is actually applied -->
+                <button
+                    *ngIf="!isDateFilterActive()"
+                    class="date-filter-icon-only"
+                    (click)="toggleDateDropdown()"
+                    aria-haspopup="true"
+                    [attr.aria-expanded]="showDateDropdown">
+                    <span class="material-icons">calendar_month</span>
+                </button>
+
+                <!-- Expanded button when filter is actually active (column + dates selected) -->
+                <button
+                    *ngIf="isDateFilterActive()"
+                    class="date-filter-button active"
+                    (click)="toggleDateDropdown()"
+                    aria-haspopup="true"
+                    [attr.aria-expanded]="showDateDropdown">
+                    <span class="material-icons filter-icon">calendar_month</span>
+                    <div class="filter-content">
+                        <div class="filter-details">
+                            <span class="column-name">{{ selectedDateColumnLabel || selectedDateColumn }}</span>
+                            <span class="date-separator">•</span>
+                            <span class="date-range">{{ getDateRangeDisplay() }}</span>
+                        </div>
+                    </div>
+                    <span class="material-icons dropdown-arrow">arrow_drop_down</span>
+                </button>
+
+                <!-- Dropdown (same as before) -->
+                <div *ngIf="showDateDropdown" class="date-dropdown" 
+                    style="position: absolute; z-index: 50; top: 40px; left: 0; background: #ffffff; 
+                            border: 1px solid #e0e0e0; box-shadow: 0 6px 12px rgba(0,0,0,0.08); 
+                            padding: 12px; width: 380px; border-radius:6px;">
+                    
+                    <div *ngIf="(dateFilterColumns || []).length === 0" 
+                        style="padding:8px; font-size:13px; color:#666;">
+                        No date columns configured for this report.
+                    </div>
+
+                    <div *ngIf="(dateFilterColumns || []).length > 0">
+                        <!-- Column Selection -->
+                        <div style="font-size:13px; color:#333; margin-bottom:6px; font-weight: 500;">Choose column</div>
+                        <div class="date-columns-list" style="max-height:140px; overflow:auto; margin-bottom:12px;">
+                            <div *ngFor="let c of dateFilterColumns" 
+                                style="padding:8px 10px; cursor:pointer; border-radius:4px; transition: background 0.2s;"
+                                [style.background]="selectedDateColumn === c.name ? '#fff2f7' : 'transparent'"
+                                (click)="selectDateColumn(c)">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <div style="font-size:14px; color:#45546e;">{{ c.label || c.name }}</div>
+                                    <span *ngIf="selectedDateColumn === c.name" 
+                                        class="material-icons" 
+                                        style="font-size:18px; color:#ee4961;">check_circle</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Date Range Selection (shows when column is selected) -->
+                        <div *ngIf="selectedDateColumn" style="border-top:1px solid #f0f0f0; padding-top:12px;">
+                            <div style="font-size:13px; margin-bottom:8px; font-weight: 500; color:#333;">Select range</div>
+
+                            <!-- Preset Buttons -->
+                            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;">
+                                <button *ngFor="let preset of dateRangePresets" 
+                                        mat-stroked-button
+                                        (click)="applyPresetRange(preset.key)"
+                                        [style.background]="selectedPreset === preset.key ? '#fff2f7' : 'white'"
+                                        [style.border-color]="selectedPreset === preset.key ? '#ee4961' : '#ddd'"
+                                        [style.color]="selectedPreset === preset.key ? '#ee4961' : '#45546e'"
+                                        style="font-size:12px; padding:6px 12px; border-radius:6px; 
+                                            border: 1px solid; cursor: pointer; transition: all 0.2s;">
+                                    {{ preset.label }}
+                                </button>
+                            </div>
+
+                            <!-- Custom Date Range Inputs -->
+                            <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+                                <div style="font-size:12px; color:#666; margin-bottom:8px; font-weight: 500;">Custom Range</div>
+                                
+                                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+                                    <div style="flex: 1;">
+                                        <label style="font-size:11px; color:#666; display:block; margin-bottom:4px;">Start Date</label>
+                                        <input type="date" 
+                                            [(ngModel)]="customStartDate"
+                                            (change)="onCustomDateChange()"
+                                            style="width:100%; padding:8px; border:1px solid #ddd; 
+                                                    border-radius:4px; font-size:13px; font-family: 'DM Sans';" />
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="font-size:11px; color:#666; display:block; margin-bottom:4px;">End Date</label>
+                                        <input type="date" 
+                                            [(ngModel)]="customEndDate"
+                                            (change)="onCustomDateChange()"
+                                            style="width:100%; padding:8px; border:1px solid #ddd; 
+                                                    border-radius:4px; font-size:13px; font-family: 'DM Sans';" />
+                                    </div>
+                                </div>
+
+                                <!-- Display selected range -->
+                                <div *ngIf="customStartDate && customEndDate" 
+                                    style="font-size:12px; color:#45546e; padding:6px; 
+                                            background: white; border-radius:4px; text-align: center;">
+                                    <span class="material-icons" style="font-size:14px; vertical-align:middle; color:#ee4961;">
+                                        date_range
+                                    </span>
+                                    {{ formatDateDisplay(customStartDate) }} - {{ formatDateDisplay(customEndDate) }}
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="filter-actions">
+                                <button class="btn-clear" 
+                                        (click)="clearDateFilter()">
+                                    <span class="material-icons">clear</span>
+                                    Clear Filter
+                                </button>
+                                <div class="action-buttons-right">
+                                    <button class="btn-cancel" 
+                                            (click)="toggleDateDropdown()">
+                                        Cancel
+                                    </button>
+                                    <button class="btn-apply" 
+                                            (click)="confirmDateFilter()" 
+                                            [disabled]="!isDateRangeValid()">
+                                        <span class="material-icons">check</span>
+                                        Apply Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if(!showSlicer && slicerNames.length > 0) {
+            <div class="filter-icon" (click)="toggleSlicer()">
+                <span class="material-icons">filter_list</span>
+            </div>
+            }
+            @else if(slicerNames.length > 0) {
+            <div class="filter-icon" (click)="toggleSlicer()">
+                <span class="material-icons">filter_list_off</span>
+            </div>
+            }
+            <!-- Replace your date filter button section (around line 165-235) with this: -->
+            <div class="search-box">
+                <input type="text" placeholder="Search" [(ngModel)]="searchText" (input)="onSearch()" />
+                <button class="search-button">
+                    <span class="material-icons">search</span>
+                </button>
+            </div>
+        </div>
+    </div>
+   <!-- Replace your existing slicers section (around line 194) with this: -->
+
+    @if(showSlicer && slicerNames.length > 0) {
+    <!-- Carousel wrapper -->
+    <div class="carousel-wrapper">
+    <!-- Left arrow -->
+    <button 
+        *ngIf="showLeftArrow" 
+        class="carousel-arrow left-arrow" 
+        (click)="scrollSlicersLeft()"
+        aria-label="Scroll left">
+        <span class="material-icons">chevron_left</span>
+    </button>
+
+    <!-- Slicers container with cdkDropList -->
+    <div class="slicers-container" 
+        cdkDropList 
+        cdkDropListOrientation="horizontal"
+        (cdkDropListDropped)="dropSlicer($event)">
+
+        @for(sname of slicerNames; track sname) {
+        <ng-container>
+        <!-- each card is draggable -->
+        <mat-card class="slicer-card" cdkDrag>
+            <mat-card-content class="slicer-card-content">
+            <!-- Slicer header with search and clear -->
+            <div class="slicer-search-box">
+                <mat-icon class="search-icon hover-pointer" (click)="toggleSlicerSearch(sname)">search</mat-icon>
+                <span class="slicer-title" [matTooltip]="slicerTitles[sname]">{{ slicerTitles[sname] }}</span>
+                <mat-icon class="clear-btn hover-pointer" (click)="clearSlicerFunc(sname)" [ngClass]="{
+                iconClicked: filterConfig[sname],
+                iconNClicked: !filterConfig[sname]
+                }">filter_alt_off</mat-icon>
+            </div>
+
+            <!-- Virtual scroll viewport for slicer items -->
+            <cdk-virtual-scroll-viewport itemSize="36" class="example-viewport">
+                <!-- Search input (conditionally shown) -->
+                <div *ngIf="searchStates[sname]" class="slicer-search-input">
+                <input type="text" 
+                        placeholder="Search in {{ slicerTitles[sname] || sname }}"
+                        [(ngModel)]="searchInputs[sname]" 
+                        (input)="onSlicerSearch(sname)" 
+                        class="slicer-input" />
+                </div>
+                
+                <!-- Slicer items -->
+                <div *cdkVirtualFor="let item of slicerData[sname]" class="example-item">
+                <button *ngIf="item.name && item.isClicked" 
+                        mat-button 
+                        (click)="slicerFilter(item, sname)"
+                        [ngClass]="{ isClicked: item.isSelected, isnClicked: !item.isSelected }">
+                    {{ item.name }}
+                </button>
+                </div>
+            </cdk-virtual-scroll-viewport>
+            </mat-card-content>
+        </mat-card>
+        </ng-container>
+        }
+    </div>
+
+    <!-- Right arrow -->
+    <button 
+        *ngIf="showRightArrow" 
+        class="carousel-arrow right-arrow" 
+        (click)="scrollSlicersRight()"
+        aria-label="Scroll right">
+        <span class="material-icons">chevron_right</span>
+    </button>
+    </div>
+    }
+        <div style="width: 98%;height: 100vh;display: flex;flex-direction: column;justify-content: center;margin-left: 2vh;">
+            <!-- Loading spinner -->
+            <!-- <mat-spinner *ngIf="isLoading" diameter="50" style="margin: auto;"></mat-spinner> -->
+            @if(statusItems.length > 0){
+                <div class="filter-container">
+                    <div class="filter-header">
+                    <i 
+                        class="toggle-icon" 
+                        [class.collapsed]="isCollapsed" 
+                        (click)="isCollapsed = !isCollapsed">
+                    </i>
+                    </div>
+                    <div class="filter-display" style="width: 100%;" *ngIf="!isCollapsed">
+                    <div *ngFor="let sum of getDisplayedCards() | slice:0:7" 
+                        class="filter-cards" (click)="onFilterCardClick(sum)"
+                        [ngClass]="{'selected-card': sum.selected}"
+                        [style.border-left-color]="sum.color">
+                        <div class="filter-text" style="font-family: 'DM Sans'; color: #515965; font-size: 14px;text-overflow: ellipsis;overflow: hidden; white-space: nowrap;max-width: 75%;" [matTooltip]="sum.value">{{sum.value}}</div>
+                        <div class="filter-value" style="font-family: 'DM Sans'; color: #515965; font-size: 14px;">{{sum.count}}</div>
+                    </div>
+                    </div>
+                    <div class="filter-display" *ngIf="isCollapsed">
+                    <div *ngFor="let sum of statusItems" 
+                        class="filter-cards" (click)="onFilterCardClick(sum)"
+                        [ngClass]="{'selected-card': sum.selected}"
+                        [style.border-left-color]="sum.color">
+                        <div class="filter-text" style="font-family: 'DM Sans'; color: #515965; font-size: 14px;text-overflow: ellipsis;overflow: hidden; white-space: nowrap;max-width: 75%;" [title]="sum.value">{{sum.value}}</div>
+                        <div class="filter-value" style="font-family: 'DM Sans'; color: #515965; font-size: 14px;">{{sum.count}}</div>
+                    </div>
+                    </div>
+                </div>
+                }
+            <ag-grid-angular
+        style="width: 100%; height: 100%;"
+        class="ag-theme-alpine accounts-ag-table"
+        [rowData]="rowData"
+        [columnDefs]="colDefs"
+        [defaultColDef]="defaultColDef"
+        [gridOptions]="gridOptions"
+        [sideBar]="sideBar"
+        [rowHeight]="40"
+        (gridReady)="onGridReady($event)"
+        (firstDataRendered)="onFirstDataRendered($event)">
+        </ag-grid-angular>
+
+        </div>
+    }
+    @else{
+    <div class="empty-state">
+    <ngx-spinner 
+    bdColor="rgba(0, 0, 0, 0.1)" 
+    size="medium" 
+    color="#ee4961" 
+    type="ball-clip-rotate-multiple"
+    [fullScreen]="true">
+    <p style="color: #160003ad; font-family: DM Sans; font-size: 14px; margin-top: 10px;">
+        Loading report...
+    </p>
+    </ngx-spinner>
+    </div>
+    }
